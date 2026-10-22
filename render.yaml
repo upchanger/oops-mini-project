@@ -4,7 +4,8 @@ services:
     env: docker
     plan: free
     region: oregon
-    dockerfilePath: Dockerfile
+    dockerfilePath: docker/Dockerfile
+    dockerContext: .
     healthCheckPath: /api/notes
     envVars:
       - key: PORT

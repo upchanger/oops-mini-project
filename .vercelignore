@@ -1,0 +1,10 @@
+# Ignore backend files during Vercel static build
+docker/
+.dockerignore
+render.yaml
+src/main/java/
+pom.xml
+mvnw
+mvnw.cmd
+.mvn/
+data/

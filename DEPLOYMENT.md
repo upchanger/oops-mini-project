@@ -73,7 +73,7 @@ NotesFlow uses a decoupled, hybrid architecture designed for speed, security, an
 
 ## ☁️ Option B: Deploying Spring Boot Backend to Cloud
 
-If you want persistent cloud storage across multiple devices, deploy the Java 21 Spring Boot backend using the pre-configured [Dockerfile](file:///c:/Users/dhanv/Desktop/VS%20code/oops%20mini%20project/Dockerfile) or [render.yaml](file:///c:/Users/dhanv/Desktop/VS%20code/oops%20mini%20project/render.yaml).
+If you want persistent cloud storage across multiple devices, deploy the Java 21 Spring Boot backend using the pre-configured [docker/Dockerfile](file:///c:/Users/dhanv/Desktop/VS%20code/oops%20mini%20project/docker/Dockerfile) or [render.yaml](file:///c:/Users/dhanv/Desktop/VS%20code/oops%20mini%20project/render.yaml).
 
 ### Deploying to Render (Free Tier Web Service)
 
@@ -82,7 +82,7 @@ If you want persistent cloud storage across multiple devices, deploy the Java 21
 3. Click **New +** → **Blueprint** (or **Web Service**).
 4. Connect your GitHub repository.
 5. Render detects `render.yaml` automatically:
-   - **Runtime**: Docker (`Dockerfile`)
+   - **Runtime**: Docker (`docker/Dockerfile`)
    - **Port**: `8080`
    - **Plan**: Free
 6. Click **Apply**.
@@ -94,7 +94,7 @@ If you want persistent cloud storage across multiple devices, deploy the Java 21
 1. Sign in to [railway.app](https://railway.app).
 2. Click **New Project** → **Deploy from GitHub repo**.
 3. Select this repository.
-4. Railway will automatically detect the multi-stage `Dockerfile` (Java 21 Temurin) and start building.
+4. Set Dockerfile path to `docker/Dockerfile` (Java 21 Temurin) and start building.
 5. In project **Settings** → **Networking**, click **Generate Domain** to get your public API URL.
 
 ---
