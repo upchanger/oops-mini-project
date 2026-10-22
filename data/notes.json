@@ -11,17 +11,17 @@
   "type" : "CHECKLIST",
   "title" : "Release Checklist",
   "createdAt" : "2026-10-22T11:18:59.968447200",
-  "updatedAt" : "2026-10-22T11:18:59.993179900",
+  "updatedAt" : "2026-10-22T11:49:54.141235100",
   "tags" : [ "devops" ],
   "items" : [ {
     "text" : "Run tests",
     "completed" : true
   }, {
     "text" : "Build jar",
-    "completed" : false
+    "completed" : true
   }, {
     "text" : "Deploy",
-    "completed" : false
+    "completed" : true
   } ]
 }, {
   "id" : "1cb368ac-8c6d-4119-926b-ca5d7390c421",
@@ -42,24 +42,4 @@
   "content" : "Final code submission and presentation.",
   "dueDate" : "0006-02-20T11:00",
   "priority" : "MEDIUM"
-}, {
-  "id" : "6d5bfb05-b91c-42b1-9c31-417518cbd342",
-  "type" : "CHECKLIST",
-  "title" : "Implementation Checklist",
-  "createdAt" : "2026-10-22T11:24:32.342477800",
-  "updatedAt" : "2026-10-22T11:25:23.458663",
-  "tags" : [ "checklist", "dev" ],
-  "items" : [ {
-    "text" : "Define AbstractNote",
-    "completed" : true
-  }, {
-    "text" : "Create NoteFactory",
-    "completed" : false
-  }, {
-    "text" : "Write REST API",
-    "completed" : false
-  }, {
-    "text" : "Build Frontend",
-    "completed" : false
-  } ]
 } ]

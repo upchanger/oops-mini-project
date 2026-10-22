@@ -13,7 +13,8 @@ const state = {
     searchQuery: '',
     sortBy: 'updated',
     activeModalType: 'TEXT',
-    unlockingNoteId: null
+    unlockingNoteId: null,
+    deletingNoteId: null
 };
 
 // DOM Elements
@@ -62,6 +63,13 @@ const elements = {
     closeUnlockModalBtn: document.getElementById('closeUnlockModalBtn'),
     cancelUnlockBtn: document.getElementById('cancelUnlockBtn'),
     submitUnlockBtn: document.getElementById('submitUnlockBtn'),
+
+    // Delete Modal
+    deleteModal: document.getElementById('deleteModal'),
+    deleteNotePrompt: document.getElementById('deleteNotePrompt'),
+    closeDeleteModalBtn: document.getElementById('closeDeleteModalBtn'),
+    cancelDeleteBtn: document.getElementById('cancelDeleteBtn'),
+    confirmDeleteBtn: document.getElementById('confirmDeleteBtn'),
 
     toast: document.getElementById('toast')
 };
@@ -152,6 +160,11 @@ function setupEventListeners() {
     elements.unlockPinInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') submitUnlock();
     });
+
+    // Delete Modal Triggers
+    elements.closeDeleteModalBtn.addEventListener('click', closeDeleteModal);
+    elements.cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+    elements.confirmDeleteBtn.addEventListener('click', executeDeleteNote);
 }
 
 // --- API Calls ---
@@ -233,14 +246,26 @@ function createNoteCardElement(note) {
             <h3 class="note-title">${escapeHtml(note.title)}</h3>
         </div>
         <div class="card-actions">
-            <button class="btn-card-action" onclick="exportNote('${note.id}', 'markdown')" title="Export Markdown">
+            <button class="btn-card-action btn-export-note" title="Export Markdown">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             </button>
-            <button class="btn-card-action danger" onclick="deleteNote('${note.id}')" title="Delete Note">
+            <button class="btn-card-action danger btn-delete-note" title="Delete Note">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
         </div>
     `;
+    const exportBtn = header.querySelector('.btn-export-note');
+    exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        exportNote(note.id, 'markdown');
+    });
+
+    const deleteBtn = header.querySelector('.btn-delete-note');
+    deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        promptDeleteNote(note.id, note.title);
+    });
+
     card.appendChild(header);
 
     // Body content based on polymorphic type
@@ -422,12 +447,25 @@ async function toggleChecklistItem(noteId, index) {
     }
 }
 
-async function deleteNote(noteId) {
-    if (!confirm('Are you sure you want to delete this note?')) return;
+function promptDeleteNote(noteId, title) {
+    state.deletingNoteId = noteId;
+    elements.deleteNotePrompt.textContent = `Are you sure you want to permanently delete "${title}"?`;
+    elements.deleteModal.style.display = 'flex';
+}
+
+function closeDeleteModal() {
+    elements.deleteModal.style.display = 'none';
+    state.deletingNoteId = null;
+}
+
+async function executeDeleteNote() {
+    if (!state.deletingNoteId) return;
+    const noteId = state.deletingNoteId;
     try {
         const res = await fetch(`/api/notes/${noteId}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Failed to delete note');
         state.notes = state.notes.filter(n => n.id !== noteId);
+        closeDeleteModal();
         renderNotes();
         fetchTags();
         fetchStats();
@@ -622,3 +660,12 @@ function escapeAttr(text) {
     if (!text) return '';
     return text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
+
+// Window Global Bindings
+window.promptDeleteNote = promptDeleteNote;
+window.deleteNote = promptDeleteNote;
+window.closeDeleteModal = closeDeleteModal;
+window.executeDeleteNote = executeDeleteNote;
+window.exportNote = exportNote;
+window.openUnlockModal = openUnlockModal;
+window.openCreateModal = openCreateModal;
