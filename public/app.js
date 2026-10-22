@@ -5,6 +5,9 @@
  *  - Standalone Local mode: Zero-setup client-side storage for Vercel static deployments
  */
 
+// Default Production Cloud Backend (Render)
+const DEFAULT_CLOUD_BACKEND = 'https://notesflow-api.onrender.com';
+
 // Application State
 const state = {
     notes: [],
@@ -20,7 +23,7 @@ const state = {
     deletingNoteId: null,
     theme: localStorage.getItem('notesflow_theme') || 'dark',
     storageMode: localStorage.getItem('notesflow_storage_mode') || 'auto', // 'auto', 'local', 'custom'
-    backendUrl: localStorage.getItem('notesflow_backend_url') || '',
+    backendUrl: localStorage.getItem('notesflow_backend_url') || DEFAULT_CLOUD_BACKEND,
     activeBackend: 'cloud', // 'cloud' or 'local'
     fullscreen: {
         isOpen: false,
@@ -498,10 +501,19 @@ const LocalStorageEngine = {
 
 // --- Storage Engine Orchestrator ---
 function getApiBaseUrl() {
-    if (state.storageMode === 'custom' && state.backendUrl) {
+    // If explicitly in local storage mode, do not route to backend
+    if (state.storageMode === 'local') return '';
+
+    // If running locally in development on localhost:8080, use local relative path
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return '';
+    }
+
+    // Use configured backend URL or default to Render production cloud backend
+    if (state.backendUrl) {
         return state.backendUrl.replace(/\/$/, '');
     }
-    return '';
+    return DEFAULT_CLOUD_BACKEND;
 }
 
 async function initStorageEngine() {
@@ -512,11 +524,11 @@ async function initStorageEngine() {
         return;
     }
 
-    // Probe backend connection
+    // Probe backend connection (with generous timeout in case of Render cold start)
     const base = getApiBaseUrl();
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
         const res = await fetch(`${base}/api/notes?sort=updated`, {
             signal: controller.signal
         });
@@ -528,8 +540,25 @@ async function initStorageEngine() {
             setBackendMode('local', 'Standalone Mode');
         }
     } catch (e) {
-        // Backend not reachable - seamless fallback to local storage
-        setBackendMode('local', 'Standalone Mode');
+        // If connecting to cloud backend took longer than 8s (e.g. Render spin-up), retry in background
+        if (base) {
+            setBackendMode('cloud', 'Connecting Cloud...');
+            setTimeout(async () => {
+                try {
+                    const retry = await fetch(`${base}/api/notes?sort=updated`);
+                    if (retry.ok) {
+                        setBackendMode('cloud', 'Cloud Synced');
+                        fetchNotes();
+                        fetchTags();
+                        fetchStats();
+                    }
+                } catch (_) {
+                    setBackendMode('local', 'Standalone Mode');
+                }
+            }, 3500);
+        } else {
+            setBackendMode('local', 'Standalone Mode');
+        }
     }
 }
 
@@ -1510,7 +1539,7 @@ function openConnectionModal() {
 
     // Load saved settings into form
     const mode = localStorage.getItem('notesflow_storage_mode') || 'auto';
-    const savedUrl = localStorage.getItem('notesflow_backend_url') || '';
+    const savedUrl = localStorage.getItem('notesflow_backend_url') || DEFAULT_CLOUD_BACKEND;
 
     const radio = elements.connectionModal.querySelector(`input[name="storageMode"][value="${mode}"]`);
     if (radio) radio.checked = true;
@@ -1519,7 +1548,7 @@ function openConnectionModal() {
         elements.backendUrlInput.value = savedUrl;
     }
     if (elements.connectionTestResult) {
-        elements.connectionTestResult.textContent = 'Leave blank to use current origin (/api)';
+        elements.connectionTestResult.textContent = `Default Cloud Backend: ${DEFAULT_CLOUD_BACKEND}`;
         elements.connectionTestResult.style.color = 'var(--text-muted)';
     }
 
