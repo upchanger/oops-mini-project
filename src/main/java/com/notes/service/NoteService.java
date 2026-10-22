@@ -113,6 +113,27 @@ public class NoteService {
         noteRepository.save(note);
     }
 
+    public AbstractNote updateNote(String noteId, String newTitle, String newContent, String pin, Set<String> newTags) {
+        AbstractNote note = getNoteById(noteId);
+        if (newTitle != null && !newTitle.trim().isEmpty()) {
+            note.setTitle(newTitle.trim());
+        }
+        if (newTags != null) {
+            note.setTags(newTags);
+        }
+        if (note instanceof TextNote textNote) {
+            if (newContent != null) {
+                textNote.setContent(newContent);
+            }
+        } else if (note instanceof EncryptedNote encryptedNote) {
+            if (newContent != null) {
+                encryptedNote.updateContent(newContent, pin);
+            }
+        }
+        noteRepository.save(note);
+        return note;
+    }
+
     public void deleteNote(String noteId) {
         if (!noteRepository.deleteById(noteId)) {
             throw new NoteNotFoundException(noteId);

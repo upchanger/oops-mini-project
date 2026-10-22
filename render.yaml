@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: notesflow-api
+    env: docker
+    plan: free
+    region: oregon
+    dockerfilePath: Dockerfile
+    healthCheckPath: /api/notes
+    envVars:
+      - key: PORT
+        value: 8080

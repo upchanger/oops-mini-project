@@ -1,0 +1,7 @@
+.git
+target/
+.mvn/wrapper/maven-wrapper.jar
+data/
+*.log
+.DS_Store
+Thumbs.db

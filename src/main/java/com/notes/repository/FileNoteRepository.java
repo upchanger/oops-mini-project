@@ -155,10 +155,23 @@ public class FileNoteRepository implements NoteRepository {
                 arrayNode.add(serializeNote(note));
             }
 
-            // Atomic write using a temp file to prevent corruption
-            Path tempFile = Files.createTempFile(storagePath.getParent(), "notes-tmp", ".json");
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempFile.toFile(), arrayNode);
-            Files.move(tempFile, storagePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            Path tempFile = null;
+            try {
+                tempFile = Files.createTempFile(storagePath.getParent(), "notes-tmp", ".json");
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(tempFile.toFile(), arrayNode);
+                try {
+                    Files.move(tempFile, storagePath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+                } catch (IOException moveEx) {
+                    Files.move(tempFile, storagePath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            } catch (IOException ex) {
+                // Direct file write fallback for Windows concurrency and locking
+                objectMapper.writerWithDefaultPrettyPrinter().writeValue(storagePath.toFile(), arrayNode);
+            } finally {
+                if (tempFile != null) {
+                    try { Files.deleteIfExists(tempFile); } catch (IOException ignored) {}
+                }
+            }
         } catch (IOException e) {
             throw new StorageException("Failed to flush notes to storage file: " + storagePath, e);
         }

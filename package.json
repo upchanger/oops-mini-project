@@ -1,0 +1,9 @@
+{
+  "name": "notesflow",
+  "version": "1.0.0",
+  "description": "NotesFlow — Modern OOP Note-Making Web Application",
+  "private": true,
+  "scripts": {
+    "build": "node build.js"
+  }
+}

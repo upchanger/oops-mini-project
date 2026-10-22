@@ -83,6 +83,17 @@ public abstract class AbstractNote {
         return tag != null && tags.contains(tag.trim().toLowerCase());
     }
 
+    public void setTags(Set<String> newTags) {
+        this.tags.clear();
+        if (newTags != null) {
+            newTags.stream()
+                    .filter(t -> t != null && !t.trim().isEmpty())
+                    .map(t -> t.trim().toLowerCase())
+                    .forEach(this.tags::add);
+        }
+        touch();
+    }
+
     /**
      * Polymorphic discriminator for Note variant.
      */

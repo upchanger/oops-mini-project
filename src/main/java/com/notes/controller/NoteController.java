@@ -3,6 +3,7 @@ package com.notes.controller;
 import com.notes.dto.CreateNoteRequest;
 import com.notes.dto.NoteResponse;
 import com.notes.dto.UnlockRequest;
+import com.notes.dto.UpdateNoteRequest;
 import com.notes.exception.ValidationException;
 import com.notes.model.AbstractNote;
 import com.notes.service.ExportService;
@@ -63,6 +64,14 @@ public class NoteController {
             }
         };
         return ResponseEntity.status(HttpStatus.CREATED).body(NoteResponse.fromNote(createdNote));
+    }
+
+    @PutMapping("/notes/{id}")
+    public ResponseEntity<NoteResponse> updateNote(
+            @PathVariable String id,
+            @RequestBody UpdateNoteRequest req) {
+        AbstractNote updated = noteService.updateNote(id, req.getTitle(), req.getContent(), req.getPin(), req.getTags());
+        return ResponseEntity.ok(NoteResponse.fromNote(updated));
     }
 
     @DeleteMapping("/notes/{id}")

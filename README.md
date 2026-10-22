@@ -60,6 +60,17 @@ Execute all unit and integration tests:
 
 ---
 
+## 🌐 Cloud & Vercel Deployment
+
+NotesFlow supports **Zero-Setup Vercel Deployment** with a **Dual-Mode Storage Engine**:
+- **Frontend on Vercel**: Hosted via Vercel Edge CDN with static bundling (`build.js`, `vercel.json`).
+- **Zero-Backend Local Mode**: Runs smoothly right out of the box on Vercel without requiring a server, using browser local storage with full polymorphic OOP features, SHA-256 PIN hashing, search, and Markdown export.
+- **Spring Boot Cloud Backend**: Easily deployable to Render, Railway, or Docker using the included `Dockerfile` and `render.yaml`.
+
+📖 **See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step instructions.**
+
+---
+
 ## 🎨 Frontend Design Guidelines
 The web frontend is located in `src/main/resources/static/` and adheres to the **`frontend-design`** standard:
 - **Curated Slate Token Palette**: Canvas `#0F172A`, Surface Cards `#1E293B`, Indigo Accent `#6366F1`, Sage Green `#10B981`, Warm Coral `#F43F5E`.

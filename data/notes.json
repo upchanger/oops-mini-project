@@ -1,45 +1,18 @@
 [ {
-  "id" : "f17f7165-5c23-4705-8671-7abaeffa1380",
-  "type" : "TEXT",
-  "title" : "OOP Architecture Overview",
-  "createdAt" : "2026-10-22T11:20:54.773419600",
-  "updatedAt" : "2026-10-22T11:20:54.773419600",
-  "tags" : [ "design-patterns", "java", "oop" ],
-  "content" : "This enterprise app is built with pure Java 21 and Spring Boot, utilizing Encapsulation, Polymorphism, and GoF patterns."
-}, {
-  "id" : "b1c50033-99e2-466f-9305-9952d1d43d46",
+  "id" : "149fcc9f-1e5c-4654-bff4-7895623dc8d7",
   "type" : "CHECKLIST",
   "title" : "Release Checklist",
-  "createdAt" : "2026-10-22T11:18:59.968447200",
-  "updatedAt" : "2026-10-22T11:49:54.141235100",
+  "createdAt" : "2026-10-22T17:46:47.956664300",
+  "updatedAt" : "2026-10-22T17:46:47.987993400",
   "tags" : [ "devops" ],
   "items" : [ {
     "text" : "Run tests",
     "completed" : true
   }, {
     "text" : "Build jar",
-    "completed" : true
+    "completed" : false
   }, {
     "text" : "Deploy",
-    "completed" : true
+    "completed" : false
   } ]
-}, {
-  "id" : "1cb368ac-8c6d-4119-926b-ca5d7390c421",
-  "type" : "ENCRYPTED",
-  "title" : "Vault Secrets",
-  "createdAt" : "2026-10-22T11:27:40.474131600",
-  "updatedAt" : "2026-10-22T11:27:40.474131600",
-  "tags" : [ "security", "vault" ],
-  "encryptedContent" : "cl1dUlhWVlpFW1JYEXNjfRFZVk1CElJaVRJSRlJaWkBUUUdBQ1cTRFBBQENeQFdHHw==",
-  "pinHash" : "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ="
-}, {
-  "id" : "39d9e493-98d2-4510-9269-ef92d3e28a33",
-  "type" : "REMINDER",
-  "title" : "Project Deadline",
-  "createdAt" : "2026-10-22T11:38:09.001237800",
-  "updatedAt" : "2026-10-22T11:38:09.001873800",
-  "tags" : [ "deadline", "enterprise" ],
-  "content" : "Final code submission and presentation.",
-  "dueDate" : "0006-02-20T11:00",
-  "priority" : "MEDIUM"
 } ]
